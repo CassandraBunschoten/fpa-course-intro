@@ -37,7 +37,7 @@ object AOC2019_2 extends App:
   val cpu: CPU =
     CPU(
       Source
-        .fromFile("fps/src/main/resources/input2019_2.txt")
+        .fromFile("fps/src/main/resources/aoc2019/input2019_2.txt")
         .mkString
         .split(",")
         .map(_.toInt)

@@ -51,7 +51,7 @@ def stringToPassport(s: String): Passport =
 
 object AOC42020 extends App:
     println(Source
-    .fromFile("fps/src/main/resources/input42020.txt")
+    .fromFile("fps/src/main/resources/aoc2020/input42020.txt")
     .mkString
     .split("\n\n")
     .map(_.map(_ match{ case '\n' => ' ' case x => x}))
