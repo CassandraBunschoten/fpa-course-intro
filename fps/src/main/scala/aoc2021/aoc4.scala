@@ -5,7 +5,7 @@ object AOC4 extends App:
 
     val draws: List[Int] =
       Source
-        .fromFile("fps/src/main/resources/input04.txt")
+        .fromFile("fps/src/main/resources/aoc2021/input04.txt")
         .getLines
         .toList
         .head

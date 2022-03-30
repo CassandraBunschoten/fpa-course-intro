@@ -1,5 +1,5 @@
 package fps
-package cassandra
+package cas
 
 import cats.instances.set
 import scala.{List => sList}

@@ -5,7 +5,7 @@ import scala.io.Source
 object AOC1 extends App:
 
   val depth = Source
-        .fromFile("fps/src/main/resources/input01.txt").getLines.map(_.toInt).toList
+        .fromFile("fps/src/main/resources/aoc2021/input01.txt").getLines.map(_.toInt).toList
 
   def increase(l: List[Int]): Int =
   l.sliding(2)

@@ -6,7 +6,7 @@ object AOC2 extends App:
 
   val move1 = 
     Source
-    .fromFile("fps/src/main/resources/input02.txt")
+    .fromFile("fps/src/main/resources/aoc2021/input02.txt")
     .getLines
     .toList
   

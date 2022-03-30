@@ -5,7 +5,7 @@ import scala.io.Source
 object AOC3 extends App:
   val diagnostics = 
     Source
-    .fromFile("fps/src/main/resources/input03.txt")
+    .fromFile("fps/src/main/resources/aoc2021/input03.txt")
     .getLines
     .flatMap(_.split(""))
     .map(_.toInt)

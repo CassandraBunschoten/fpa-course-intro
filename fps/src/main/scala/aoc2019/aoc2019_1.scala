@@ -10,7 +10,7 @@ object AOC2019_1 extends App:
 
   val modules: List[Double] = 
     Source
-      .fromFile("fps/src/main/resources/input2019_1.txt")
+      .fromFile("fps/src/main/resources/aoc2019/input2019_1.txt")
       .getLines
       .map(_.toDouble)
       .toList
