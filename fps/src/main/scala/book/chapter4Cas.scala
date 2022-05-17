@@ -1,5 +1,5 @@
 package fps4
-package cas4
+package cas
 
 sealed trait Option[+A] {
 

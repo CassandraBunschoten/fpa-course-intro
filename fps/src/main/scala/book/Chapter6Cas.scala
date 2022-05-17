@@ -1,5 +1,5 @@
+
 package fps6
-package cas6
 
 trait RNG:
   def nextInt: (Int, RNG)
@@ -178,6 +178,7 @@ object Chap6 extends App:
   // println(map(nonNegativeLessThan(4))(_ * 2)(rng))
   // println(mapFlat(nonNegativeLessThan(4))(_ * 2)(rng))
   // println(map2Flat(nonNegativeLessThan(10), nonNegativeLessThan(10))(_ + _)(rng))
-  // println(unit(4)(rng))
+  println(unit(4)(rng))
+  println(unit(4))
   // println(State.unit(4))
   
