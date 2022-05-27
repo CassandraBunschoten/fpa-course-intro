@@ -9,23 +9,53 @@ case class Left(distance: Int)   extends Direction(distance)
 case class Up(distance: Int)     extends Direction(distance)
 case class Down(distance: Int)   extends Direction(distance)
 
-def makeDirection(input: String): Direction = 
-  input.head match 
-    case 'R' => Right(input.tail.toInt)
-    case 'L' => Left(- input.tail.toInt)
-    case 'U' => Up(input.tail.toInt)
-    case 'D' => Down(- input.tail.toInt)
+object Direction: 
+  def makeDirection(input: String): Direction = 
+    input.head match 
+      case 'R' => Right(input.tail.toInt)
+      case 'L' => Left(- input.tail.toInt)
+      case 'U' => Up(input.tail.toInt)
+      case 'D' => Down(- input.tail.toInt)
 
+case class Location(x: Int, y: Int)
 
-// make a variable which tracks location
-case class Location(x: Int, y: Int):
-  def updateLoc(d: Direction): List[Location] = 
+case class Range(xStart: Int, xEnd: Int, yStart: Int, yEnd: Int):
+  def updateRange(d: Direction): Range = 
+    val Location(x, y) = this.getCurLoc
     d match 
-      case Right(v) if (v > 0) => copy(x + v, y) :: updateLoc(Right(v - 1))
-      case Left(v)  if (v < 0) => copy(x + v, y) :: updateLoc(Left(v + 1))
-      case Up(v)    if (v > 0) => copy(x, y + v) :: updateLoc(Up(v - 1))
-      case Down(v)  if (v < 0) => copy(x, y + v) :: updateLoc(Down(v + 1))
-      case _                   => Nil 
+      case Right(v) => copy(x, x + v, y, y)
+      case Left(v)  => copy(x, x + v, y, y)
+      case Up(v)    => copy(x, x, y, y + v)
+      case Down(v)  => copy(x, x, y, y + v)
+
+  def getCurLoc: Location = 
+    this match
+      case Range(_, x, _, y) => Location(x, y)
+
+  def overlap(r2: Range): Option[Location] = 
+    val overlapRangeX: List[Int] = 
+      this match 
+      case Range(x, xe, _, _) => r2 match 
+        case Range(x2, xe2, _, _) => posRange(x2, xe2).filter(a => posRange(x, xe).contains(a)).toList
+    
+    if (overlapRangeX.isEmpty) None else 
+      val overlapRangeY: List[Int] = 
+        this match 
+        case Range(_, _, y, ye) => r2 match 
+          case Range(_, _, y2, ye2) => posRange(y2, ye2).filter(a => posRange(y, ye).contains(a)).toList
+         
+      if (overlapRangeY.isEmpty) None else Some(Location(overlapRangeX.max, overlapRangeY.max))
+
+def posRange(v: Int, v2: Int): scala.collection.immutable.Range = 
+  if (v <= v2) (v to v2) else (v2 to v)  
+
+def overlappingWires(w1: List[Range], w2: List[Range]): List[Location] = 
+  val lo = for {
+    r  <- w1
+    r2 <- w2
+  } yield(r.overlap(r2)) 
+  
+  lo.flatMap(x => x)
 
 type ManDistance = Int    
 
@@ -39,26 +69,18 @@ object AOC2019_3 extends App:
         .fromFile("fps/src/main/resources/aoc2019/input2019_3.txt")
         .getLines
         .toList
-        .map(_.split(",").toList.map(x => makeDirection(x)))
+        .map(_.split(",").toList.map(x => Direction.makeDirection(x)))
         .toList
 
 
-  val locWire1: List[Location] = wire1.scanLeft(List(Location(0,0)))
-                              ((acc, x) => acc.head.updateLoc(x) ::: acc).flatten
-  val locWire2: List[Location] = wire2.scanLeft(List(Location(0,0)))
-                              ((acc, x) => acc.head.updateLoc(x) ::: acc).flatten
-  
-  val crosses = locWire1.flatMap(loc => locWire2.filter(loc2 => loc2 == loc))
-                        .filter(res => res != Location(0,0))
+  val wire1Range: List[Range] = wire1.foldLeft(List(Range(0,0,0,0)))
+                              ((acc, x) => acc.head.updateRange(x) :: acc)
+  val wire2Range: List[Range] = wire2.foldLeft(List(Range(0,0,0,0)))
+                              ((acc, x) => acc.head.updateRange(x) :: acc)
 
-  val answer = crosses.map(x => manhattanDistance(x)).min
+  val crosses = overlappingWires(wire1Range, wire2Range)
 
-  println(answer)
+  val man = crosses.filter(x => x != Location(0,0)).map(x => manhattanDistance(x))
 
-  // def extract(d: List[Direction]): List[Int] = 
-  //   d match 
-  //     case Down(v) :: t  => (v) :: extract(t)
-  //     case Right(v) :: t => (v) :: extract(t)
-  //     case Left(v) :: t  => (v) :: extract(t)
-  //     case Up(v) :: t    => (v) :: extract(t)
-  //     case _             => Nil
+  println(man.min)
+
